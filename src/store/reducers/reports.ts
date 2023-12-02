@@ -1,6 +1,7 @@
 import { IReport } from '../../models/IReport';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
+import { Title, SortBy } from '../../shared/constants';
 
 interface IReportState {
 	data: IReport[];
@@ -12,6 +13,11 @@ interface IReportState {
 interface IFilterDateAction {
 	month: number;
 	years: number;
+}
+
+interface ISortBY {
+	title: string;
+	sort: SortBy;
 }
 
 const initialState: IReportState = {
@@ -49,6 +55,14 @@ export const reportSlice = createSlice({
 				state.filteredData = filteredDataByMonthAndYear.filter(
 					(item) => item.category === action.payload,
 				);
+			}
+		},
+		sortData(state: IReportState, action: PayloadAction<ISortBY>) {
+			const { title, sort } = action.payload;
+			if (sort === SortBy.ASCENDING) {
+				state.filteredData = state.filteredData.sort((a, b) => +a[title] - +b[title]);
+			} else if (sort === SortBy.DESCENDING) {
+				state.filteredData = state.filteredData.sort((a, b) => +b[title] - +a[title]);
 			}
 		},
 	},

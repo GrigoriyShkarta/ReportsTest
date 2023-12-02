@@ -1,11 +1,11 @@
 import { FC, useEffect, useState, MouseEvent } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { reportSlice } from '../../store/reducers/reports';
-import { tableTitles } from '../../shared/constants';
+import { tableTitles, Title } from '../../shared/constants';
 import Popup from './Popup';
 
-export interface IPopupProps {
-	isCategory: boolean;
+interface IPopupProps {
+	title: string;
 	x: number;
 	y: number;
 }
@@ -14,7 +14,7 @@ const Table: FC = () => {
 	const { filteredData, month, years } = useAppSelector((state) => state.reportReducer);
 	const { changeDataByMonthAndYear } = reportSlice.actions;
 	const [activePopup, setActivePopup] = useState<boolean>(false);
-	const [category, setCategory] = useState<IPopupProps>({ isCategory: false, x: 0, y: 0 });
+	const [category, setCategory] = useState<IPopupProps>({ title: 'category', x: 0, y: 0 });
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
@@ -23,8 +23,13 @@ const Table: FC = () => {
 
 	const handleClick = (e: MouseEvent<HTMLButtonElement>, title: string): void => {
 		const { clientX, clientY } = e;
-		setCategory({ isCategory: title === 'Category', x: clientX, y: clientY });
+		setCategory({ title, x: clientX, y: clientY });
 		setActivePopup(!activePopup);
+	};
+
+	const getDay = (date: string): number => {
+		const dateObject = new Date(date);
+		return dateObject.getDate();
 	};
 
 	return (
@@ -43,7 +48,7 @@ const Table: FC = () => {
 				<tbody>
 					{filteredData.map((item, index) => (
 						<tr key={index}>
-							<td>{item.date}</td>
+							<td>{getDay(item.date)}</td>
 							<td>{item.category}</td>
 							<td>{item.unitsSold}</td>
 							<td>{item.revenue}</td>
@@ -54,7 +59,7 @@ const Table: FC = () => {
 			</table>
 			{activePopup && (
 				<Popup
-					isCategory={category?.isCategory}
+					title={category.title}
 					x={category?.x}
 					y={category?.y}
 					setActivePopup={setActivePopup}
