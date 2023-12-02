@@ -13,4 +13,6 @@ export const setupStore = () => {
 
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppStore = ReturnType<typeof rootReducer>;
-export type AppDispatch = ReturnType<typeof rootReducer>;
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+export type AppDispatch = AppStore['dispatch'];

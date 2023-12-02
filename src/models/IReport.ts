@@ -3,4 +3,5 @@ export interface IReport {
 	category: string;
 	revenue: number;
 	unitsSold: number;
+	profit: number;
 }
