@@ -1,7 +1,8 @@
 import { FC, useEffect, useState, MouseEvent } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { reportSlice } from '../../store/reducers/reports';
-import { tableTitles, Title } from '../../shared/constants';
+import { tableTitles } from '../../shared/constants';
+import { saveAs } from 'file-saver';
 import Popup from './Popup';
 
 interface IPopupProps {
@@ -14,6 +15,7 @@ const Table: FC = () => {
 	const { filteredData, month, years } = useAppSelector((state) => state.reportReducer);
 	const { changeDataByMonthAndYear } = reportSlice.actions;
 	const [activePopup, setActivePopup] = useState<boolean>(false);
+	const [csvData, setCsvData] = useState<string>('');
 	const [category, setCategory] = useState<IPopupProps>({ title: 'category', x: 0, y: 0 });
 	const dispatch = useAppDispatch();
 
@@ -30,6 +32,14 @@ const Table: FC = () => {
 	const getDay = (date: string): number => {
 		const dateObject = new Date(date);
 		return dateObject.getDate();
+	};
+
+	const handleDownloadCsv = (): void => {
+		const csvHeaders = tableTitles.join(',') + '\n';
+		const csvBody = filteredData.map((item) => Object.values(item).join(',')).join('\n');
+		const csvString = csvHeaders + csvBody;
+		const csvBlob = new Blob([csvString], { type: 'text/csv;charset=utf-8' });
+		saveAs(csvBlob, 'table_data.csv');
 	};
 
 	return (
@@ -65,6 +75,7 @@ const Table: FC = () => {
 					setActivePopup={setActivePopup}
 				/>
 			)}
+			<button onClick={handleDownloadCsv}>Download CSV</button>
 		</div>
 	);
 };

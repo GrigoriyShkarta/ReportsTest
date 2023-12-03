@@ -2,6 +2,7 @@ import { IReport } from '../../models/IReport';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import { Title, SortBy } from '../../shared/constants';
+import { mapTitles } from '../../mappers';
 
 interface IReportState {
 	data: IReport[];
@@ -59,11 +60,16 @@ export const reportSlice = createSlice({
 		},
 		sortData(state: IReportState, action: PayloadAction<ISortBY>) {
 			const { title, sort } = action.payload;
-			if (sort === SortBy.ASCENDING) {
-				state.filteredData = state.filteredData.sort((a, b) => +a[title] - +b[title]);
-			} else if (sort === SortBy.DESCENDING) {
-				state.filteredData = state.filteredData.sort((a, b) => +b[title] - +a[title]);
-			}
+			const convertTitle = mapTitles(title);
+
+			const compareFunction = (a: IReport, b: IReport): number => {
+				const valueA = convertTitle === 'date' ? new Date(a.date).getTime() : +a[convertTitle];
+				const valueB = convertTitle === 'date' ? new Date(b.date).getTime() : +b[convertTitle];
+
+				return sort === SortBy.ASCENDING ? valueA - valueB : valueB - valueA;
+			};
+
+			state.filteredData = [...state.filteredData].sort(compareFunction);
 		},
 	},
 });

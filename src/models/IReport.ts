@@ -4,4 +4,5 @@ export interface IReport {
 	revenue: number;
 	unitsSold: number;
 	profit: number;
+	[key: string]: any;
 }

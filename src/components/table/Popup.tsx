@@ -17,26 +17,29 @@ const Popup: FC<IPopupProps> = ({ title, x, y, setActivePopup }) => {
 	const uniqCategory = [...new Set(data.map((item) => item.category)), 'All Category'];
 	console.log(uniqCategory);
 
-	const handleClick = (item: string): void => {
+	const handleClickCategory = (item: string): void => {
 		dispatch(filterCategory(item));
+		setActivePopup(false);
+	};
+
+	const handleClickSortBy = (title: string, sort: SortBy): void => {
+		dispatch(sortData({ title, sort }));
 		setActivePopup(false);
 	};
 
 	return (
 		<div style={{ position: 'absolute', zIndex: 10, left: x, top: y }}>
 			<ul>
-				{title === 'category' ? (
+				{title === 'Category' ? (
 					uniqCategory.map((item) => (
-						<li key={item} onClick={(): void => handleClick(item)}>
+						<li key={item} onClick={(): void => handleClickCategory(item)}>
 							{item}
 						</li>
 					))
 				) : (
 					<>
-						<li onClick={(): void => dispatch(sortData({ title, sort: SortBy.ASCENDING }))}>ASC</li>
-						<li onClick={(): void => dispatch(sortData({ title, sort: SortBy.DESCENDING }))}>
-							DESC
-						</li>
+						<li onClick={(): void => handleClickSortBy(title, SortBy.ASCENDING)}>ASC</li>
+						<li onClick={(): void => handleClickSortBy(title, SortBy.DESCENDING)}>DESC</li>
 					</>
 				)}
 			</ul>
