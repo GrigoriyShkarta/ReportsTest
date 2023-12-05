@@ -4,6 +4,7 @@ import Table from './components/table';
 import { useAppDispatch } from './hooks/redux';
 import { reportSlice } from './store/reducers/reports';
 import fakeData from './MOCK_DATA.json';
+import Chart from './components/chart';
 
 function App(): JSX.Element {
 	const dispatch = useAppDispatch();
@@ -16,6 +17,7 @@ function App(): JSX.Element {
 	return (
 		<div className="App">
 			<Table />
+			<Chart />
 		</div>
 	);
 }
