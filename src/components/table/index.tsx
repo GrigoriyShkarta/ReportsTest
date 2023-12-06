@@ -14,7 +14,7 @@ import { Button, Space, Table, Typography } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 
 const TableComponent: FC = () => {
-	const { filteredData, month } = useAppSelector((state) => state.reportReducer);
+	const { filteredData, month, data } = useAppSelector((state) => state.reportReducer);
 	const { changeDataByMonthAndYear } = reportSlice.actions;
 	const dispatch = useAppDispatch();
 	const uniqCategory = [...new Set(filteredData.map((item) => item.category))];
@@ -60,7 +60,7 @@ const TableComponent: FC = () => {
 
 	useEffect(() => {
 		dispatch(changeDataByMonthAndYear(month));
-	}, []);
+	}, [data]);
 
 	const handleDownloadCsv = (): void => {
 		const csvHeaders = tableTitles.join(',') + '\n';
